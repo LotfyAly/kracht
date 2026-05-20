@@ -26,7 +26,7 @@
     background: var(--paper);
     color: var(--ink);
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-    padding: 24px 16px;
+    padding: 24px 16px 100px;
     background-image:
       radial-gradient(circle at 20% 0%, rgba(45, 74, 58, 0.04) 0%, transparent 50%),
       radial-gradient(circle at 80% 100%, rgba(184, 112, 74, 0.04) 0%, transparent 50%);
@@ -36,15 +36,53 @@
   input[type="number"] { -moz-appearance: textfield; }
 
   .container { max-width: 640px; margin: 0 auto; }
-  .header { margin-bottom: 24px; }
+  .header { margin-bottom: 20px; }
   .header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
   .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
   .title { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 500; line-height: 0.95; margin: 0; letter-spacing: -0.02em; font-variation-settings: 'opsz' 144; }
   .title-accent { color: var(--copper); }
   .date-tag { font-family: 'Fraunces', serif; font-size: 13px; font-style: italic; color: var(--muted); padding-top: 12px; text-align: right; }
 
+  /* Program selector */
+  .program-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 12px;
+    margin: 0 -16px 18px;
+    padding-left: 16px;
+    padding-right: 16px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .program-strip::-webkit-scrollbar { display: none; }
+  .program-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.18s ease;
+    flex-shrink: 0;
+  }
+  .program-pill:hover { background: #EFE8D6; }
+  .program-pill.active { background: var(--forest); color: var(--paper); border-color: var(--forest); }
+  .program-description {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    margin: -8px 0 18px;
+    padding-left: 2px;
+  }
+
   .flash { background: var(--forest); color: var(--paper); padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 16px; animation: fadeIn 0.3s ease; }
-  .error-flash { background: #B8704A; color: var(--paper); padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; }
+  .error-flash { background: var(--copper); color: var(--paper); padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; }
 
   .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
   .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 10px; text-align: center; }
@@ -76,6 +114,7 @@
   .cal-cell.future { opacity: 0.4; }
   .cal-cell.empty { visibility: hidden; }
   .cal-day-num { font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1; }
+  .cal-dots { display: flex; gap: 2px; }
   .cal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--forest); }
   .cal-cell.selected .cal-dot { background: var(--paper); }
 
@@ -88,15 +127,26 @@
   .details-date { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; text-transform: capitalize; letter-spacing: -0.01em; }
   .details-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .close-btn { background: none; border: none; font-size: 24px; color: var(--muted); cursor: pointer; line-height: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
-  .details-body { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .details-section { margin-bottom: 14px; }
+  .details-program-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--copper);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .details-body { display: flex; flex-direction: column; gap: 8px; }
   .details-row { display: flex; justify-content: space-between; font-size: 13px; gap: 12px; }
   .details-ex-name { color: var(--ink); font-weight: 500; }
   .details-ex-summary { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
   .delete-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-size: 12px; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-family: inherit; width: 100%; }
 
-  .today-header { margin-top: 36px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-  .today-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); font-weight: 500; margin-bottom: 4px; }
-  .today-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; margin: 0; letter-spacing: -0.02em; }
+  .today-header { margin-top: 36px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: baseline; }
+  .today-header-left .today-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--copper); font-weight: 500; margin-bottom: 4px; }
+  .today-header-left .today-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; margin: 0; letter-spacing: -0.02em; }
+  .today-program { font-size: 12px; color: var(--muted); font-style: italic; font-family: 'Fraunces', serif; }
 
   .progress-wrap { margin-bottom: 14px; }
   .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
@@ -132,6 +182,40 @@
   .check-btn:hover { transform: scale(1.05); }
   .check-btn.done { background: var(--forest); border-color: var(--forest); color: var(--paper); }
 
+  /* Set-duration timer (for plank, hold etc.) */
+  .timer-cell {
+    flex: 1; background: #FFFFFF; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    position: relative; overflow: hidden; min-height: 40px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .timer-cell.running { border-color: var(--copper); }
+  .timer-cell.complete { background: var(--card-done); border-color: #D6CFB9; }
+  .timer-progress {
+    position: absolute; inset: 0;
+    background: rgba(184, 112, 74, 0.13);
+    transform-origin: left; transform: scaleX(0);
+  }
+  .timer-cell.running .timer-progress { transition: transform 1s linear; }
+  .timer-cell.complete .timer-progress { background: rgba(45, 74, 58, 0.10); transform: scaleX(1); }
+  .timer-label { position: relative; z-index: 1; font-size: 13px; color: var(--ink); font-weight: 500; }
+  .timer-countdown {
+    position: relative; z-index: 1; margin-left: auto;
+    font-family: 'Fraunces', serif; font-size: 18px; color: var(--copper);
+    font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -0.01em;
+  }
+  .timer-cell.complete .timer-countdown { color: var(--forest); }
+  .timer-btn {
+    width: 36px; height: 36px; border: 1px solid var(--border); background: #FFFFFF;
+    border-radius: 6px; cursor: pointer; font-size: 11px; color: var(--forest);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: all 0.15s ease; font-family: inherit;
+  }
+  .timer-btn:hover:not(:disabled) { transform: scale(1.05); }
+  .timer-btn.running { background: var(--copper); color: var(--paper); border-color: var(--copper); }
+  .timer-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
   .save-btn { width: 100%; background: var(--forest); color: var(--paper); border: none; padding: 16px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 24px; font-family: inherit; transition: all 0.15s ease; letter-spacing: 0.01em; }
   .save-btn:hover:not(:disabled) { background: var(--forest-dark); transform: translateY(-1px); }
   .save-btn:disabled { background: #C8C2B0; cursor: not-allowed; }
@@ -139,6 +223,54 @@
 
   .bottom-margin { height: 40px; }
 
+  /* Rest timer floating bar */
+  .rest-bar {
+    position: fixed; left: 16px; right: 16px; bottom: 16px;
+    background: var(--forest); color: var(--paper);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 12px 32px rgba(31, 53, 40, 0.35);
+    z-index: 100;
+    max-width: 608px; margin: 0 auto;
+    animation: restIn 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+    position: fixed; overflow: hidden;
+  }
+  .rest-bar-progress {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: rgba(184, 112, 74, 0.4);
+    transform-origin: left; transition: transform 1s linear;
+  }
+  .rest-bar-content {
+    position: relative; z-index: 1; display: flex;
+    align-items: center; gap: 14px; flex: 1;
+  }
+  .rest-bar-label {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    font-weight: 600; opacity: 0.75;
+  }
+  .rest-bar-time {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 500;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em; line-height: 1;
+  }
+  .rest-bar-spacer { flex: 1; }
+  .rest-bar-btn {
+    background: rgba(245, 240, 230, 0.15);
+    border: 1px solid rgba(245, 240, 230, 0.25);
+    color: var(--paper);
+    border-radius: 6px; padding: 6px 12px;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    font-family: inherit; transition: background 0.15s ease;
+  }
+  .rest-bar-btn:hover { background: rgba(245, 240, 230, 0.25); }
+  .rest-bar-close {
+    background: transparent; border: none; color: var(--paper);
+    font-size: 22px; cursor: pointer; padding: 0; width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center; opacity: 0.7;
+  }
+  .rest-bar-close:hover { opacity: 1; }
+
+  /* Modal */
   .modal-backdrop { position: fixed; inset: 0; background: rgba(26, 31, 27, 0.65); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; animation: backdropIn 0.2s ease; }
   .modal-content { background: var(--paper); border-radius: 16px; max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.25); animation: modalIn 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
   .modal-close { position: absolute; top: 12px; right: 12px; background: rgba(245, 240, 230, 0.9); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; font-size: 20px; color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; z-index: 2; }
@@ -164,77 +296,15 @@
   .setup-screen p { font-size: 14px; line-height: 1.6; color: var(--ink); margin: 0 0 12px; }
   .setup-screen ol { padding-left: 22px; font-size: 14px; line-height: 1.7; }
   .setup-screen code { background: #EAE3D0; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: 'Courier New', monospace; }
-  .setup-screen .note { background: rgba(184, 112, 74, 0.08); border: 1px dashed rgba(184, 112, 74, 0.3); padding: 12px 14px; border-radius: 8px; font-size: 13px; color: var(--ink); margin-top: 16px; }
 
   /* Loading */
   .loading { text-align: center; padding: 80px 20px; color: var(--muted); font-style: italic; font-family: 'Fraunces', serif; }
-
-  /* Timer UI */
-  .timer-cell {
-    flex: 1;
-    background: #FFFFFF;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    overflow: hidden;
-    min-height: 40px;
-    transition: border-color 0.2s ease, background 0.2s ease;
-  }
-  .timer-cell.running { border-color: var(--copper); }
-  .timer-cell.complete { background: var(--card-done); border-color: #D6CFB9; }
-  .timer-progress {
-    position: absolute;
-    inset: 0;
-    background: rgba(184, 112, 74, 0.13);
-    transform-origin: left;
-    transform: scaleX(0);
-  }
-  .timer-cell.running .timer-progress { transition: transform 1s linear; }
-  .timer-cell.complete .timer-progress { background: rgba(45, 74, 58, 0.10); transform: scaleX(1); }
-  .timer-label {
-    position: relative; z-index: 1;
-    font-size: 13px;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .timer-countdown {
-    position: relative; z-index: 1;
-    margin-left: auto;
-    font-family: 'Fraunces', serif;
-    font-size: 18px;
-    color: var(--copper);
-    font-variant-numeric: tabular-nums;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-  }
-  .timer-cell.complete .timer-countdown { color: var(--forest); }
-  .timer-btn {
-    width: 36px; height: 36px;
-    border: 1px solid var(--border);
-    background: #FFFFFF;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 11px;
-    color: var(--forest);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.15s ease;
-    font-family: inherit;
-  }
-  .timer-btn:hover:not(:disabled) { transform: scale(1.05); }
-  .timer-btn.running { background: var(--copper); color: var(--paper); border-color: var(--copper); }
-  .timer-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes modalIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
   @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes restIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
@@ -247,8 +317,7 @@
 
   <script type="text/babel" data-presets="env,react">
     // ============================================================
-    // CONFIGURATIE — vul hier je Supabase credentials in
-    // Vind ze in Supabase: Settings → API → Project URL & anon key
+    // CONFIGURATIE
     // ============================================================
     const SUPABASE_URL = "https://tzjhkgpdxpjtdlxojydu.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Ro3Gc1NbCWdwx588v7PZ0Q_feAXTg1V";
@@ -256,41 +325,147 @@
 
     const { useState, useEffect, useRef } = React;
 
-    const EXERCISES = [
+    const DEFAULT_REST = 90; // seconds between rep-based sets
+
+    // ============================================================
+    // PROGRAMS
+    // ============================================================
+    const PROGRAMS = [
       {
-        id: "goblet-squat", name: "Goblet squat", sets: 3, target: "10 reps", isTime: false,
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Squats.svg/640px-Squats.svg.png",
-        tip: "Houd de kettlebell of dumbbell tegen je borst, ellebogen omlaag. Zak rustig totdat je heupen lager zijn dan je knieën. Knieën in lijn met je tenen, romp rechtop."
+        id: "gym",
+        name: "Sportschool",
+        short: "Sportschool",
+        description: "Krachttraining voor hardlopers — vrijdag in de gym.",
+        exercises: [
+          {
+            id: "goblet-squat", name: "Goblet squat", sets: 3, target: "10 reps", isTime: false,
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Squats.svg/640px-Squats.svg.png",
+            tip: "Houd de kettlebell of dumbbell tegen je borst, ellebogen omlaag. Zak rustig totdat je heupen lager zijn dan je knieën. Knieën in lijn met je tenen, romp rechtop."
+          },
+          {
+            id: "rdl", name: "Romanian deadlift", sets: 3, target: "10 reps", isTime: false,
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Romanian-deadlift-1.png/620px-Romanian-deadlift-1.png",
+            tip: "Knieën licht gebogen — niet meer. Duw je heupen naar achteren alsof je een deur dichtdoet met je kont. Rug recht, gewichten dicht langs je benen."
+          },
+          {
+            id: "bulgarian", name: "Bulgarian split squat", sets: 3, target: "8 reps p/been", isTime: false,
+            image: null,
+            tip: "Achterste voet op het bankje, voorste voet ver genoeg vooruit. Zak recht naar beneden, gewicht op de hiel van je voorste voet. Voorste knie blijft in lijn met je tenen."
+          },
+          {
+            id: "hip-thrust", name: "Hip thrust", sets: 3, target: "12 reps", isTime: false,
+            image: null,
+            tip: "Schouderbladen op de bank, voeten plat op de grond. Knijp je billen aan op het hoogste punt — je lichaam moet één rechte lijn vormen van knie tot schouder."
+          },
+          {
+            id: "calf-raises", name: "Staande calf raises", sets: 3, target: "15 reps", isTime: false,
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Standing-calf-raises-1.svg/163px-Standing-calf-raises-1.svg.png",
+            tip: "Sta op een verhoging zodat je hielen onder horizontaal kunnen zakken. Volledige rek beneden, helemaal door op je tenen omhoog. Rustig tempo."
+          },
+          {
+            id: "plank", name: "Plank + side plank", sets: 3, target: "30s + 2×20s", isTime: true,
+            setDurations: [30, 20, 20], setLabels: ["Plank", "Side plank links", "Side plank rechts"],
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Plank_exercise.svg/800px-Plank_exercise.svg.png",
+            tip: "Lichaam in een rechte lijn — geen doorgezakte rug, geen hoge billen. Span actief je core en bilspieren. Adem rustig door."
+          }
+        ]
       },
       {
-        id: "rdl", name: "Romanian deadlift", sets: 3, target: "10 reps", isTime: false,
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Romanian-deadlift-1.png/620px-Romanian-deadlift-1.png",
-        tip: "Knieën licht gebogen — niet meer. Duw je heupen naar achteren alsof je een deur dichtdoet met je kont. Rug recht, gewichten dicht langs je benen."
+        id: "bw",
+        name: "Thuis · bodyweight",
+        short: "Bodyweight",
+        description: "Zonder gewichten thuis — alleen je lichaam.",
+        exercises: [
+          { id: "bw-squat", name: "Bodyweight squat", sets: 3, target: "20 reps", noWeight: true, tip: "Voeten heupbreed, tenen iets naar buiten. Zak diep met controle. Maak het zwaarder met squat-pulses of pauze in het diepste punt." },
+          { id: "bw-glute-bridge", name: "Single-leg glute bridge", sets: 3, target: "12 reps p/been", noWeight: true, tip: "Op je rug, één voet plat op de grond, andere been omhoog. Duw je heupen omhoog door je bilspier; lichaam vormt een rechte lijn van knie tot schouder." },
+          { id: "bw-bulgarian", name: "Bulgarian split squat", sets: 3, target: "12 reps p/been", noWeight: true, tip: "Achterste voet op stoel of bank. Zonder gewicht houden — focus op diepte en stabiliteit. Hogere reps om je benen voldoende uit te dagen." },
+          { id: "bw-stepup", name: "Step-ups", sets: 3, target: "10 reps p/been", noWeight: true, tip: "Stevige stoel of bank. Stap omhoog door enkel je voorste been; trek bovenaan je achterste knie hoog op. Mimeert de hardloopbeweging." },
+          { id: "bw-calf-raises", name: "Single-leg calf raises", sets: 3, target: "15 reps p/been", noWeight: true, tip: "Op een trede zodat je hiel onder horizontaal kan zakken. Eén been tegelijk maakt het zwaar genoeg — vasthouden aan reling voor balans mag." },
+          {
+            id: "bw-plank", name: "Plank + side plank", sets: 3, target: "30s + 2×20s", isTime: true, noWeight: true,
+            setDurations: [30, 20, 20], setLabels: ["Plank", "Side plank links", "Side plank rechts"],
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Plank_exercise.svg/800px-Plank_exercise.svg.png",
+            tip: "Lichaam in een rechte lijn — geen doorgezakte rug, geen hoge billen. Span actief je core en bilspieren."
+          }
+        ]
       },
       {
-        id: "bulgarian", name: "Bulgarian split squat", sets: 3, target: "8 reps p/been", isTime: false,
-        image: null,
-        tip: "Achterste voet op het bankje, voorste voet ver genoeg vooruit. Zak recht naar beneden, gewicht op de hiel van je voorste voet. Voorste knie blijft in lijn met je tenen."
+        id: "core",
+        name: "Core voor hardlopers",
+        short: "Core",
+        description: "Anti-rotatie en stabiliteit — wat een lopersromp echt nodig heeft.",
+        exercises: [
+          { id: "dead-bug", name: "Dead bug", sets: 3, target: "10 reps p/kant", noWeight: true, tip: "Op je rug, armen en benen omhoog. Strek tegenovergestelde arm en been uit zonder dat je onderrug van de grond komt. Diepe core-spanning." },
+          { id: "bird-dog", name: "Bird dog", sets: 3, target: "10 reps p/kant", noWeight: true, tip: "Vier-puntshouding. Strek tegelijkertijd tegenovergestelde arm en been uit, romp blijft stabiel — geen wiebelen. Even vasthouden bovenaan." },
+          { id: "side-plank-dip", name: "Side plank met heupdip", sets: 3, target: "10 reps p/kant", noWeight: true, tip: "Side plank-positie, laat je heup zakken en knijp hem weer omhoog. Pakt de quadratus lumborum — cruciaal tegen heup-inzakken bij het lopen." },
+          { id: "pallof-press", name: "Pallof press", sets: 3, target: "10 reps p/kant", noWeight: true, tip: "Weerstandsband aan een paal, ter hoogte van borst. Druk recht vooruit weg; de band wil je laten draaien — jij weerstaat dat. Anti-rotatie pur sang." },
+          {
+            id: "hollow-hold", name: "Hollow hold", sets: 3, target: "20-30 sec", isTime: true, noWeight: true,
+            setDurations: [25, 25, 25], setLabels: ["Hold", "Hold", "Hold"],
+            tip: "Op je rug. Onderrug stevig tegen de grond, armen en benen iets boven de grond. Span je hele core. Onderschat: pittig vanaf 15 seconden."
+          },
+          { id: "knee-raise", name: "Hanging knee raise", sets: 3, target: "10 reps", noWeight: true, tip: "Hangend aan een rekstok. Trek je knieën gecontroleerd omhoog naar je borst; laat ze rustig zakken — niet zwaaien. Alternatief: lying leg raise." }
+        ]
       },
       {
-        id: "hip-thrust", name: "Hip thrust", sets: 3, target: "12 reps", isTime: false,
-        image: null,
-        tip: "Schouderbladen op de bank, voeten plat op de grond. Knijp je billen aan op het hoogste punt — je lichaam moet één rechte lijn vormen van knie tot schouder."
+        id: "plyo",
+        name: "Explosief · plyometrisch",
+        short: "Explosief",
+        description: "Power en loopeconomie. Eén keer per week op een uitgeruste dag.",
+        exercises: [
+          { id: "squat-jump", name: "Squat jumps", sets: 3, target: "6 reps", noWeight: true, tip: "Zak in een halve squat en spring zo hoog mogelijk. Land zacht door je knieën te buigen. Kwaliteit boven kwantiteit — elke rep maximaal." },
+          { id: "single-leg-hop", name: "Single-leg hops vooruit", sets: 3, target: "8 reps p/been", noWeight: true, tip: "Spring zo ver mogelijk vooruit op één been; land op hetzelfde been en blijf stabiel staan voor de volgende. Directe vertaling naar je pas." },
+          { id: "lunge-jump", name: "Lunge jumps", sets: 3, target: "8 reps p/been", noWeight: true, tip: "Vanuit lunge-positie omhoog springen en in de lucht van been wisselen. Land zacht in lunge. Combineert eenbenig met explosief." },
+          { id: "pogo-hop", name: "Pogo hops", sets: 3, target: "20 reps", noWeight: true, tip: "Kleine, snelle springpasjes op de voorvoet — knieën nauwelijks buigen. Stuiteren als een veer. Traint je achillespees en kuit-veer." },
+          { id: "broad-jump", name: "Broad jumps", sets: 3, target: "5 reps", noWeight: true, tip: "Spring zo ver mogelijk horizontaal vooruit. Armen actief gebruiken voor zwaai. Maximale kracht — laat tussen elke jump tijd om te resetten." },
+          { id: "a-skip", name: "A-skips / high knees", sets: 3, target: "20 meter", noWeight: true, tip: "Knie hoog, snelle voet-grond contact. Looptechniek-oefening — perfect als warming-up of afsluiter. Ritmisch en lichtvoetig." }
+        ]
       },
       {
-        id: "calf-raises", name: "Staande calf raises", sets: 3, target: "15 reps", isTime: false,
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Standing-calf-raises-1.svg/163px-Standing-calf-raises-1.svg.png",
-        tip: "Sta op een verhoging zodat je hielen onder horizontaal kunnen zakken. Volledige rek beneden, helemaal door op je tenen omhoog. Rustig tempo."
-      },
-      {
-        id: "plank", name: "Plank + side plank", sets: 3, target: "30s + 2×20s", isTime: true,
-        setDurations: [30, 20, 20],
-        setLabels: ["Plank", "Side plank links", "Side plank rechts"],
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Plank_exercise.svg/800px-Plank_exercise.svg.png",
-        tip: "Lichaam in een rechte lijn — geen doorgezakte rug, geen hoge billen. Span actief je core en bilspieren. Adem rustig door."
-      },
+        id: "mob",
+        name: "Mobility & herstel",
+        short: "Mobility",
+        description: "Actieve rustdag — korter dan kracht, wel waardevol.",
+        exercises: [
+          {
+            id: "hip-9090", name: "90/90 hip switches", sets: 1, target: "2 min", isTime: true, noWeight: true,
+            setDurations: [120], setLabels: ["Heen en weer"],
+            tip: "Zit met beide knieën 90°: één voor je, één opzij. Wissel langzaam tussen beide kanten. Geweldig voor heupmobiliteit in alle richtingen."
+          },
+          {
+            id: "couch-stretch", name: "Couch stretch", sets: 2, target: "1 min p/been", isTime: true, noWeight: true,
+            setDurations: [60, 60], setLabels: ["Links", "Rechts"],
+            tip: "Knie tegen muur of bank, voet omhoog langs verticaal vlak. Voorste been in lunge. Rekt heupbuigers en quadriceps — vaak verkort bij lopers."
+          },
+          { id: "world-greatest", name: "World's greatest stretch", sets: 1, target: "5 p/kant", noWeight: true, tip: "Lunge, hand naast voorste voet op de grond, andere arm draait omhoog en open. Full body opener — heupen, romp, schouders in één." },
+          {
+            id: "pigeon-pose", name: "Pigeon pose", sets: 2, target: "1 min p/kant", isTime: true, noWeight: true,
+            setDurations: [60, 60], setLabels: ["Links", "Rechts"],
+            tip: "Voorste been gebogen voor je op de grond, achterste been gestrekt naar achteren. Zak voorover. Diep rekken van bilspieren en heuprotators."
+          },
+          {
+            id: "downward-dog", name: "Downward dog → calf stretch", sets: 1, target: "1 min", isTime: true, noWeight: true,
+            setDurations: [60], setLabels: ["Hold + pedaling"],
+            tip: "Omgekeerde V. Wissel afwisselend hielen naar de grond drukken — pedalerend. Rekt kuiten en achillespees, kritiek voor lopers."
+          },
+          {
+            id: "foam-roll", name: "Foam rollen", sets: 1, target: "5-10 min", isTime: true, noWeight: true,
+            setDurations: [300], setLabels: ["Hele body"],
+            tip: "Quads, IT-band, kuiten, bovenrug. Rol langzaam, pauzeer extra op gevoelige plekken. Diep ademen helpt de spanning loslaten."
+          }
+        ]
+      }
     ];
 
+    // Map of all exercises by ID, for rendering past sessions regardless of program
+    const ALL_EXERCISES = {};
+    for (const p of PROGRAMS) for (const ex of p.exercises) ALL_EXERCISES[ex.id] = ex;
+
+    const getProgram = (id) => PROGRAMS.find((p) => p.id === id) || PROGRAMS[0];
+
+    // ============================================================
+    // Helpers
+    // ============================================================
     const MONTHS_NL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
     const MONTHS_NL_SHORT = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
     const DAYS_NL = ["zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag"];
@@ -313,18 +488,17 @@
       return null;
     }
 
-    function blankSession(history) {
-      history = history || [];
-      const exercises = {};
-      for (const ex of EXERCISES) {
+    function blankSession(history, exercises, programId) {
+      const exMap = {};
+      for (const ex of exercises) {
         const last = findLastSets(history, ex.id);
-        exercises[ex.id] = Array.from({ length: ex.sets }, (_, i) => ({
+        exMap[ex.id] = Array.from({ length: ex.sets }, (_, i) => ({
           weight: (last && last[i] && last[i].weight) || "",
           reps:   (last && last[i] && last[i].reps)   || "",
           done: false,
         }));
       }
-      return { date: todayISO(), exercises };
+      return { date: todayISO(), exercises: exMap, programId };
     }
 
     function calculateStreak(history) {
@@ -386,7 +560,7 @@
     // ---- Fallback SVG illustrations ----
     function FallbackIllustration({ id }) {
       const stroke = "#2D4A3A", equip = "#B8704A";
-      if (id === "bulgarian") {
+      if (id === "bulgarian" || id === "bw-bulgarian") {
         return (
           <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%" }}>
             <line x1="10" y1="110" x2="150" y2="110" stroke="#A39C8A" strokeWidth="1" strokeDasharray="3,3" opacity="0.6"/>
@@ -420,7 +594,18 @@
           </svg>
         );
       }
-      return null;
+      // Generic figure for other exercises
+      return (
+        <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%" }}>
+          <line x1="10" y1="110" x2="150" y2="110" stroke="#A39C8A" strokeWidth="1" strokeDasharray="3,3" opacity="0.6"/>
+          <circle cx="80" cy="32" r="10" fill={stroke}/>
+          <line x1="80" y1="42" x2="80" y2="78" stroke={stroke} strokeWidth="5" strokeLinecap="round"/>
+          <line x1="80" y1="55" x2="58" y2="70" stroke={stroke} strokeWidth="4" strokeLinecap="round"/>
+          <line x1="80" y1="55" x2="102" y2="70" stroke={stroke} strokeWidth="4" strokeLinecap="round"/>
+          <line x1="80" y1="78" x2="68" y2="105" stroke={stroke} strokeWidth="5" strokeLinecap="round"/>
+          <line x1="80" y1="78" x2="92" y2="105" stroke={stroke} strokeWidth="5" strokeLinecap="round"/>
+        </svg>
+      );
     }
 
     function ExerciseImage({ ex, customImage }) {
@@ -431,27 +616,14 @@
     }
 
     // ============================================================
-    // SETUP SCREEN — shown when Supabase isn't configured
+    // Setup screen
     // ============================================================
     function SetupScreen() {
       return (
         <div className="setup-screen">
           <div className="eyebrow">Eenmalige setup</div>
           <h2>Supabase nog niet ingesteld</h2>
-          <p>Volg deze stappen om je tracker te koppelen aan een gratis Supabase database:</p>
-          <ol>
-            <li>Maak een gratis account op <code>supabase.com</code> en start een nieuw project.</li>
-            <li>Open in je project de <strong>SQL Editor</strong> en draai het bijgeleverde bestand <code>supabase-setup.sql</code>.</li>
-            <li>Ga naar <strong>Settings → API</strong> en kopieer je <strong>Project URL</strong> en <strong>anon public key</strong>.</li>
-            <li>Open dit HTML-bestand in een editor en plak ze in de regels:
-              <br /><code>const SUPABASE_URL = "..."</code>
-              <br /><code>const SUPABASE_ANON_KEY = "..."</code>
-            </li>
-            <li>Sla op, ververs de pagina. Klaar!</li>
-          </ol>
-          <div className="note">
-            <strong>Tip:</strong> dit HTML-bestand kun je gewoon dubbelklikken om lokaal te openen, of uploaden naar een gratis host zoals Netlify of Vercel om hem op je telefoon te gebruiken.
-          </div>
+          <p>Vul bovenaan dit HTML-bestand je <code>SUPABASE_URL</code> en <code>SUPABASE_ANON_KEY</code> in (te vinden onder Settings → API in Supabase), en voer eenmalig het <code>supabase-setup.sql</code> script uit in de SQL Editor.</p>
         </div>
       );
     }
@@ -462,8 +634,9 @@
     function App() {
       const dbRef = useRef(null);
       const [history, setHistory] = useState([]);
-      const [current, setCurrent] = useState(() => blankSession([]));
+      const [currentSessions, setCurrentSessions] = useState({}); // { programId: session }
       const [customImages, setCustomImages] = useState({});
+      const [programId, setProgramId] = useState("gym");
       const [loaded, setLoaded] = useState(false);
       const [error, setError] = useState(null);
       const [savedFlash, setSavedFlash] = useState(false);
@@ -472,14 +645,18 @@
       const [editingImage, setEditingImage] = useState(null);
       const [imageUrlInput, setImageUrlInput] = useState("");
       const [manuallyExpanded, setManuallyExpanded] = useState({});
-      const [timers, setTimers] = useState({}); // { "exId|setIdx": { remaining, total } }
+      const [timers, setTimers] = useState({}); // duration timers, keyed by "exId|setIdx"
+      const [restTimer, setRestTimer] = useState(null); // { remaining, total, exId, setIdx }
 
       const now = new Date();
       const [calYear, setCalYear] = useState(now.getFullYear());
       const [calMonth, setCalMonth] = useState(now.getMonth());
       const [selectedDate, setSelectedDate] = useState(null);
 
-      // Initialize Supabase client
+      const program = getProgram(programId);
+      const exercises = program.exercises;
+
+      // Initialize Supabase + load data
       useEffect(() => {
         try {
           dbRef.current = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -496,21 +673,39 @@
           const db = dbRef.current;
           const [sessionsRes, prefsRes] = await Promise.all([
             db.from("sessions").select("*").order("session_date", { ascending: false }),
-            db.from("preferences").select("*").in("key", ["current_session", "custom_images"]),
+            db.from("preferences").select("*"),
           ]);
           if (sessionsRes.error) throw sessionsRes.error;
           if (prefsRes.error) throw prefsRes.error;
 
-          const loadedHistory = (sessionsRes.data || []).map((row) => row.data);
+          const loadedHistory = (sessionsRes.data || []).map((row) => {
+            const d = row.data || {};
+            return { ...d, programId: d.programId || row.program_id || "gym" };
+          });
           const prefs = {};
           for (const row of (prefsRes.data || [])) prefs[row.key] = row.value;
 
+          // Collect any current_session_* keys (per program)
+          const sessions = {};
+          for (const k of Object.keys(prefs)) {
+            if (k.startsWith("current_session_")) {
+              const pid = k.slice("current_session_".length);
+              if (prefs[k] && prefs[k].date === todayISO()) {
+                sessions[pid] = prefs[k];
+              }
+            }
+          }
+          // Backward compat: single "current_session" key from v1
+          if (prefs.current_session && prefs.current_session.date === todayISO()) {
+            const pid = prefs.current_session.programId || "gym";
+            if (!sessions[pid]) sessions[pid] = prefs.current_session;
+          }
+
           setHistory(loadedHistory);
           setCustomImages(prefs.custom_images || {});
-          if (prefs.current_session && prefs.current_session.date === todayISO()) {
-            setCurrent(prefs.current_session);
-          } else {
-            setCurrent(blankSession(loadedHistory));
+          setCurrentSessions(sessions);
+          if (prefs.selected_program && PROGRAMS.some(p => p.id === prefs.selected_program)) {
+            setProgramId(prefs.selected_program);
           }
         } catch (e) {
           setError("Fout bij laden: " + (e.message || e));
@@ -519,15 +714,19 @@
         }
       }
 
-      // Debounced save of current session (waits 600ms after last edit)
+      // Get current session for active program (or blank)
+      const current = currentSessions[programId] || blankSession(history, exercises, programId);
+
+      // Debounced save of current session (per program)
       useEffect(() => {
         if (!loaded) return;
+        const sess = currentSessions[programId];
+        if (!sess) return; // nothing to save yet
         const t = setTimeout(async () => {
           try {
-            const db = dbRef.current;
-            const { error } = await db.from("preferences").upsert({
-              key: "current_session",
-              value: current,
+            const { error } = await dbRef.current.from("preferences").upsert({
+              key: `current_session_${programId}`,
+              value: sess,
               updated_at: new Date().toISOString(),
             });
             if (error) throw error;
@@ -537,66 +736,82 @@
           }
         }, 600);
         return () => clearTimeout(t);
-      }, [current, loaded]);
+      }, [currentSessions, programId, loaded]);
 
-      // Save custom images immediately on change
+      // Save custom images
       useEffect(() => {
         if (!loaded) return;
         (async () => {
           try {
             await dbRef.current.from("preferences").upsert({
-              key: "custom_images",
-              value: customImages,
-              updated_at: new Date().toISOString(),
+              key: "custom_images", value: customImages, updated_at: new Date().toISOString(),
             });
-          } catch (e) {
-            setSyncError("Afbeeldingen niet opgeslagen — probeer opnieuw.");
-          }
+          } catch (e) { setSyncError("Afbeeldingen niet opgeslagen — probeer opnieuw."); }
         })();
       }, [customImages, loaded]);
 
+      // Save selected program
+      useEffect(() => {
+        if (!loaded) return;
+        (async () => {
+          try {
+            await dbRef.current.from("preferences").upsert({
+              key: "selected_program", value: programId, updated_at: new Date().toISOString(),
+            });
+          } catch (e) {}
+        })();
+      }, [programId, loaded]);
+
+      const updateCurrentSession = (updater) => {
+        setCurrentSessions((prev) => {
+          const existing = prev[programId] || blankSession(history, exercises, programId);
+          return { ...prev, [programId]: updater(existing) };
+        });
+      };
+
       const updateSet = (exId, idx, field, value) => {
-        setCurrent((prev) => ({
-          ...prev,
-          exercises: { ...prev.exercises, [exId]: prev.exercises[exId].map((s, i) => i === idx ? { ...s, [field]: value } : s) },
+        updateCurrentSession((sess) => ({
+          ...sess,
+          exercises: {
+            ...sess.exercises,
+            [exId]: sess.exercises[exId].map((s, i) => i === idx ? { ...s, [field]: value } : s)
+          },
         }));
       };
 
       const toggleDone = (exId, idx) => {
-        setCurrent((prev) => ({
-          ...prev,
-          exercises: { ...prev.exercises, [exId]: prev.exercises[exId].map((s, i) => i === idx ? { ...s, done: !s.done } : s) },
+        const ex = exercises.find((e) => e.id === exId);
+        const wasDone = current.exercises[exId][idx].done;
+        updateCurrentSession((sess) => ({
+          ...sess,
+          exercises: {
+            ...sess.exercises,
+            [exId]: sess.exercises[exId].map((s, i) => i === idx ? { ...s, done: !s.done } : s)
+          },
         }));
-        setManuallyExpanded((prev) => {
-          const next = { ...prev };
-          delete next[exId];
-          return next;
-        });
-        // Stop a running timer for this set, if any
+        setManuallyExpanded((prev) => { const n = { ...prev }; delete n[exId]; return n; });
+        // Stop a running duration timer for this set, if any
         const key = `${exId}|${idx}`;
-        setTimers((prev) => {
-          if (!prev[key]) return prev;
-          const n = { ...prev };
-          delete n[key];
-          return n;
-        });
+        setTimers((prev) => { if (!prev[key]) return prev; const n = { ...prev }; delete n[key]; return n; });
+
+        // If this completes a rep-based set (becoming done), start the rest timer
+        // Skip rest timer for time-based exercises (they have their own per-set timer)
+        if (!wasDone && !ex.isTime) {
+          const rest = ex.rest || DEFAULT_REST;
+          setRestTimer({ remaining: rest, total: rest, exId, setIdx: idx });
+        }
       };
 
       const startTimer = (exId, idx, duration) => {
         const key = `${exId}|${idx}`;
         setTimers((prev) => ({ ...prev, [key]: { remaining: duration, total: duration } }));
       };
-
       const stopTimer = (exId, idx) => {
         const key = `${exId}|${idx}`;
-        setTimers((prev) => {
-          const n = { ...prev };
-          delete n[key];
-          return n;
-        });
+        setTimers((prev) => { const n = { ...prev }; delete n[key]; return n; });
       };
 
-      // Timer tick — runs every second while any timer is active
+      // Tick: duration timers
       const hasActiveTimers = Object.keys(timers).length > 0;
       useEffect(() => {
         if (!hasActiveTimers) return;
@@ -617,22 +832,18 @@
                 for (const f of finished) {
                   const [exId, idxStr] = f.key.split("|");
                   const idx = parseInt(idxStr, 10);
-                  setCurrent((cur) => ({
-                    ...cur,
+                  updateCurrentSession((sess) => ({
+                    ...sess,
                     exercises: {
-                      ...cur.exercises,
-                      [exId]: cur.exercises[exId].map((s, i) =>
+                      ...sess.exercises,
+                      [exId]: sess.exercises[exId].map((s, i) =>
                         i === idx ? { ...s, reps: `${f.total}s`, done: true } : s
                       ),
                     },
                   }));
                   setManuallyExpanded((m) => { const n = { ...m }; delete n[exId]; return n; });
                 }
-                setTimers((t) => {
-                  const n = { ...t };
-                  for (const f of finished) delete n[f.key];
-                  return n;
-                });
+                setTimers((t) => { const n = { ...t }; for (const f of finished) delete n[f.key]; return n; });
               }, 0);
             }
             return next;
@@ -641,23 +852,51 @@
         return () => clearInterval(interval);
       }, [hasActiveTimers]);
 
+      // Tick: rest timer
+      useEffect(() => {
+        if (!restTimer) return;
+        const interval = setInterval(() => {
+          setRestTimer((prev) => {
+            if (!prev) return null;
+            if (prev.remaining <= 1) {
+              setTimeout(() => playTimerEnd(), 0);
+              return null;
+            }
+            return { ...prev, remaining: prev.remaining - 1 };
+          });
+        }, 1000);
+        return () => clearInterval(interval);
+      }, [restTimer ? restTimer.exId + "|" + restTimer.setIdx + "|" + restTimer.total : null]);
+
+      const dismissRestTimer = () => setRestTimer(null);
+
+      const adjustRestTimer = (delta) => {
+        setRestTimer((prev) => {
+          if (!prev) return null;
+          const newRem = Math.max(1, prev.remaining + delta);
+          return { ...prev, remaining: newRem };
+        });
+      };
+
       const finishSession = async () => {
-        const completed = { ...current, completedAt: new Date().toISOString() };
+        const completed = { ...current, completedAt: new Date().toISOString(), programId };
         try {
           const db = dbRef.current;
           const { error: e1 } = await db.from("sessions").upsert({
             session_date: completed.date,
+            program_id: programId,
             data: completed,
             completed_at: completed.completedAt,
-          }, { onConflict: "session_date" });
+          }, { onConflict: "session_date,program_id" });
           if (e1) throw e1;
-          // Clear current_session preference
-          await db.from("preferences").delete().eq("key", "current_session");
-          const newHistory = [completed, ...history.filter((s) => s.date !== completed.date)];
+          await db.from("preferences").delete().eq("key", `current_session_${programId}`);
+          await db.from("preferences").delete().eq("key", "current_session"); // clean up v1 key
+          const newHistory = [completed, ...history.filter((s) => !(s.date === completed.date && (s.programId || "gym") === programId))];
           newHistory.sort((a, b) => b.date.localeCompare(a.date));
           setHistory(newHistory);
-          setCurrent(blankSession(newHistory));
+          setCurrentSessions((prev) => { const n = { ...prev }; delete n[programId]; return n; });
           setManuallyExpanded({});
+          setRestTimer(null);
           setSavedFlash(true);
           setTimeout(() => setSavedFlash(false), 2500);
           window.scrollTo({ top: 0, behavior: "smooth" });
@@ -666,11 +905,10 @@
         }
       };
 
-      const deleteSession = async (date) => {
+      const deleteSession = async (date, pid) => {
         try {
-          await dbRef.current.from("sessions").delete().eq("session_date", date);
-          setHistory((prev) => prev.filter((s) => s.date !== date));
-          setSelectedDate(null);
+          await dbRef.current.from("sessions").delete().match({ session_date: date, program_id: pid });
+          setHistory((prev) => prev.filter((s) => !(s.date === date && (s.programId || "gym") === pid)));
         } catch (e) {
           setSyncError("Verwijderen mislukt.");
         }
@@ -684,11 +922,17 @@
         setImageUrlInput("");
       };
 
-      const totalSets = EXERCISES.reduce((s, e) => s + e.sets, 0);
+      const totalSets = exercises.reduce((s, e) => s + e.sets, 0);
       const doneSets = Object.values(current.exercises).reduce((sum, sets) => sum + sets.filter((s) => s.done).length, 0);
       const progress = totalSets > 0 ? (doneSets / totalSets) * 100 : 0;
 
-      const sessionsByDate = history.reduce((acc, s) => { acc[s.date] = s; return acc; }, {});
+      // Group history sessions by date (multiple possible per date)
+      const sessionsByDate = history.reduce((acc, s) => {
+        if (!acc[s.date]) acc[s.date] = [];
+        acc[s.date].push(s);
+        return acc;
+      }, {});
+
       const stats = {
         total: history.length,
         thisMonth: history.filter((s) => {
@@ -706,7 +950,7 @@
       };
 
       const cells = getMonthGrid(calYear, calMonth);
-      const selectedSession = selectedDate ? sessionsByDate[selectedDate] : null;
+      const selectedSessions = selectedDate ? sessionsByDate[selectedDate] : null;
 
       if (!loaded) return <div className="loading">Bezig met laden…</div>;
       if (error) {
@@ -716,7 +960,7 @@
               <h3 style={{ fontFamily: "'Fraunces', serif", margin: "0 0 8px" }}>Verbinding met Supabase mislukt</h3>
               <p style={{ fontSize: 13, color: "#7A7568", margin: "0 0 12px" }}>{error}</p>
               <p style={{ fontSize: 13, color: "#7A7568", margin: 0 }}>
-                Controleer of <code>SUPABASE_URL</code> en <code>SUPABASE_ANON_KEY</code> bovenaan dit bestand correct zijn ingevuld,
+                Controleer of <code>SUPABASE_URL</code> en <code>SUPABASE_ANON_KEY</code> correct zijn,
                 en of je het SQL-script in Supabase hebt uitgevoerd.
               </p>
             </div>
@@ -735,6 +979,16 @@
               <div className="date-tag">{formatDate(todayISO())}</div>
             </div>
           </header>
+
+          <div className="program-strip">
+            {PROGRAMS.map((p) => (
+              <button key={p.id} className={"program-pill" + (p.id === programId ? " active" : "")}
+                onClick={() => { setProgramId(p.id); setRestTimer(null); }}>
+                {p.short}
+              </button>
+            ))}
+          </div>
+          <div className="program-description">{program.description}</div>
 
           {savedFlash && <div className="flash">✓ Sessie opgeslagen. Goed bezig.</div>}
           {syncError && <div className="error-flash">{syncError}</div>}
@@ -769,7 +1023,7 @@
               {cells.map((day, i) => {
                 if (day === null) return <div key={i} className="cal-cell empty" />;
                 const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-                const session = sessionsByDate[dateStr];
+                const dateSessions = sessionsByDate[dateStr];
                 const isToday = dateStr === todayISO();
                 const isFriday = (i % 7) === 4;
                 const cellDate = new Date(dateStr + "T00:00:00");
@@ -778,15 +1032,19 @@
                 const classes = ["cal-cell"];
                 if (isFriday) classes.push("friday");
                 if (isToday) classes.push("today");
-                if (session) classes.push("has-session");
+                if (dateSessions && dateSessions.length > 0) classes.push("has-session");
                 if (isSelected) classes.push("selected");
                 if (isFuture) classes.push("future");
                 return (
                   <button key={i} className={classes.join(" ")}
-                    onClick={() => session && setSelectedDate(isSelected ? null : dateStr)}
-                    disabled={!session}>
+                    onClick={() => dateSessions && setSelectedDate(isSelected ? null : dateStr)}
+                    disabled={!dateSessions}>
                     <span className="cal-day-num">{day}</span>
-                    {session && <div className="cal-dot" />}
+                    {dateSessions && dateSessions.length > 0 && (
+                      <div className="cal-dots">
+                        {dateSessions.slice(0, 3).map((_, di) => <div key={di} className="cal-dot" />)}
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -798,38 +1056,51 @@
             </div>
           </div>
 
-          {selectedSession && (
+          {selectedSessions && (
             <div className="details-card">
               <div className="details-header">
                 <div>
-                  <div className="details-date">{formatDate(selectedSession.date)}</div>
-                  <div className="details-meta">
-                    {Object.values(selectedSession.exercises).reduce((s, sets) => s + sets.filter((x) => x.done).length, 0)} sets voltooid
-                  </div>
+                  <div className="details-date">{formatDate(selectedDate)}</div>
+                  <div className="details-meta">{selectedSessions.length} {selectedSessions.length === 1 ? "training" : "trainingen"}</div>
                 </div>
                 <button onClick={() => setSelectedDate(null)} className="close-btn" aria-label="Sluiten">×</button>
               </div>
-              <div className="details-body">
-                {EXERCISES.map((ex) => {
-                  const sets = selectedSession.exercises[ex.id] || [];
-                  const summary = sets.filter((s) => s.done && (s.weight || s.reps))
-                    .map((s) => ex.isTime ? s.reps : `${s.weight || "?"}kg × ${s.reps || "?"}`).join("  ·  ");
-                  if (!summary) return null;
-                  return (
-                    <div key={ex.id} className="details-row">
-                      <span className="details-ex-name">{ex.name}</span>
-                      <span className="details-ex-summary">{summary}</span>
+              {selectedSessions.map((sess, sIdx) => {
+                const sessProgram = getProgram(sess.programId || "gym");
+                return (
+                  <div key={sIdx} className="details-section">
+                    <div className="details-program-tag">{sessProgram.name}</div>
+                    <div className="details-body">
+                      {Object.entries(sess.exercises || {}).map(([exId, sets]) => {
+                        const ex = ALL_EXERCISES[exId];
+                        if (!ex) return null;
+                        const summary = sets.filter((s) => s.done && (s.weight || s.reps))
+                          .map((s) => ex.isTime ? s.reps : `${s.weight ? s.weight + "kg × " : ""}${s.reps || "?"}`).join("  ·  ");
+                        if (!summary) return null;
+                        return (
+                          <div key={exId} className="details-row">
+                            <span className="details-ex-name">{ex.name}</span>
+                            <span className="details-ex-summary">{summary}</span>
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
-              </div>
-              <button onClick={() => deleteSession(selectedSession.date)} className="delete-btn">Verwijder deze sessie</button>
+                    <button onClick={() => deleteSession(sess.date, sess.programId || "gym")}
+                      className="delete-btn" style={{ marginTop: 10 }}>
+                      Verwijder {sessProgram.short}-sessie
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
 
           <div className="today-header">
-            <div className="today-label">Vandaag</div>
-            <h2 className="today-title">De sessie</h2>
+            <div className="today-header-left">
+              <div className="today-label">Vandaag</div>
+              <h2 className="today-title">De sessie</h2>
+            </div>
+            <div className="today-program">{program.name}</div>
           </div>
 
           <div className="progress-wrap">
@@ -842,11 +1113,12 @@
             </div>
           </div>
 
-          {history.length > 0 && <div className="prefill-note">↻ Waardes van vorige sessie zijn voor je ingevuld. Pas aan waar nodig.</div>}
+          {history.length > 0 && <div className="prefill-note">↻ Waardes van vorige sessie zijn voor je ingevuld waar beschikbaar.</div>}
 
           <div className="exercise-list">
-            {EXERCISES.map((ex, exIdx) => {
+            {exercises.map((ex, exIdx) => {
               const sets = current.exercises[ex.id];
+              if (!sets) return null;
               const allDone = sets.every((s) => s.done);
               const isCollapsed = allDone && !manuallyExpanded[ex.id];
               return (
@@ -855,7 +1127,7 @@
                     <div className="ex-number">{String(exIdx + 1).padStart(2, "0")}</div>
                     <div style={{ flex: 1 }}>
                       <h3 className={"ex-name" + (allDone ? " struck" : "")}>{ex.name}</h3>
-                      <div className="ex-target">{ex.sets} sets × {ex.target}</div>
+                      <div className="ex-target">{ex.sets} {ex.sets === 1 ? "set" : "sets"} × {ex.target}</div>
                     </div>
                     {allDone ? (
                       <button className="expand-btn"
@@ -881,7 +1153,7 @@
                           </React.Fragment>
                         ) : (
                           <React.Fragment>
-                            {!ex.isTime && <div className="sets-header-cell">Gewicht (kg)</div>}
+                            {!ex.isTime && !ex.noWeight && <div className="sets-header-cell">Gewicht (kg)</div>}
                             <div className="sets-header-cell">{ex.isTime ? "Tijd / notitie" : "Reps"}</div>
                           </React.Fragment>
                         )}
@@ -889,9 +1161,9 @@
                       </div>
                       {sets.map((set, idx) => {
                         if (ex.isTime && ex.setDurations) {
-                          const duration = ex.setDurations[idx];
+                          const duration = ex.setDurations[idx] || ex.setDurations[ex.setDurations.length - 1];
                           const timer = timers[`${ex.id}|${idx}`];
-                          const label = ex.setLabels ? ex.setLabels[idx] : `Set ${idx + 1}`;
+                          const label = ex.setLabels ? (ex.setLabels[idx] || `Set ${idx + 1}`) : `Set ${idx + 1}`;
                           const isRunning = !!timer;
                           const remaining = isRunning ? timer.remaining : duration;
                           const isComplete = set.done && !isRunning;
@@ -920,7 +1192,7 @@
                         return (
                           <div key={idx} className="set-row">
                             <div className="set-num">{idx + 1}</div>
-                            {!ex.isTime && (
+                            {!ex.isTime && !ex.noWeight && (
                               <div className="input-cell">
                                 <input type="number" inputMode="decimal" step="0.5" value={set.weight}
                                   onChange={(e) => updateSet(ex.id, idx, "weight", e.target.value)}
@@ -949,8 +1221,25 @@
           <button className="save-btn" onClick={finishSession} disabled={doneSets === 0}>
             Sessie afronden →
           </button>
-          <div className="footnote">Je voortgang wordt automatisch gesynchroniseerd met Supabase.</div>
+          <div className="footnote">Automatisch gesynchroniseerd met Supabase.</div>
           <div className="bottom-margin" />
+
+          {restTimer && (
+            <div className="rest-bar">
+              <div className="rest-bar-progress"
+                style={{ transform: `scaleX(${1 - restTimer.remaining / restTimer.total})` }} />
+              <div className="rest-bar-content">
+                <div>
+                  <div className="rest-bar-label">Rust</div>
+                  <div className="rest-bar-time">{formatTime(restTimer.remaining)}</div>
+                </div>
+                <div className="rest-bar-spacer" />
+                <button className="rest-bar-btn" onClick={() => adjustRestTimer(-15)} aria-label="15 seconden korter">−15s</button>
+                <button className="rest-bar-btn" onClick={() => adjustRestTimer(15)} aria-label="15 seconden langer">+15s</button>
+                <button className="rest-bar-close" onClick={dismissRestTimer} aria-label="Sluiten">×</button>
+              </div>
+            </div>
+          )}
 
           {enlargedExercise && (
             <div className="modal-backdrop" onClick={() => { setEnlargedExercise(null); setEditingImage(null); }}>
@@ -963,10 +1252,9 @@
                   <div className="modal-eyebrow">Techniek</div>
                   <h3 className="modal-title">{enlargedExercise.name}</h3>
                   <p className="modal-tip">{enlargedExercise.tip}</p>
-
                   {editingImage === enlargedExercise.id ? (
                     <div className="url-editor">
-                      <div className="url-editor-label">Plak hier een afbeelding-URL (rechtermuisklik op een plaatje → "Afbeeldingsadres kopiëren"):</div>
+                      <div className="url-editor-label">Plak een afbeelding-URL (rechtermuisklik op een plaatje → "Afbeeldingsadres kopiëren"):</div>
                       <input type="text" value={imageUrlInput}
                         onChange={(e) => setImageUrlInput(e.target.value)}
                         placeholder="https://..." className="url-input" />
@@ -983,8 +1271,7 @@
                       ✎ {customImages[enlargedExercise.id] ? "Eigen afbeelding wijzigen" : "Eigen afbeelding toevoegen"}
                     </button>
                   )}
-
-                  <div className="modal-target">{enlargedExercise.sets} sets × {enlargedExercise.target}</div>
+                  <div className="modal-target">{enlargedExercise.sets} {enlargedExercise.sets === 1 ? "set" : "sets"} × {enlargedExercise.target}</div>
                 </div>
               </div>
             </div>
@@ -993,15 +1280,9 @@
       );
     }
 
-    // ============================================================
-    // BOOT
-    // ============================================================
     const root = ReactDOM.createRoot(document.getElementById("root"));
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      root.render(<SetupScreen />);
-    } else {
-      root.render(<App />);
-    }
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) root.render(<SetupScreen />);
+    else root.render(<App />);
   </script>
 </body>
 </html>
