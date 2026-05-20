@@ -826,26 +826,44 @@
                 if (newRem === 0) finished.push({ key, total: next[key].total });
               }
             }
-            if (finished.length > 0) {
-              setTimeout(() => {
-                playTimerEnd();
-                for (const f of finished) {
-                  const [exId, idxStr] = f.key.split("|");
-                  const idx = parseInt(idxStr, 10);
-                  updateCurrentSession((sess) => ({
-                    ...sess,
-                    exercises: {
-                      ...sess.exercises,
-                      [exId]: sess.exercises[exId].map((s, i) =>
-                        i === idx ? { ...s, reps: `${f.total}s`, done: true } : s
-                      ),
-                    },
-                  }));
-                  setManuallyExpanded((m) => { const n = { ...m }; delete n[exId]; return n; });
+            if (finished.length === 0) return next;
+
+            // For each finished timer, remove it and possibly queue the next set
+            for (const f of finished) {
+              delete next[f.key];
+              const [exId, idxStr] = f.key.split("|");
+              const idx = parseInt(idxStr, 10);
+              const exData = ALL_EXERCISES[exId];
+              if (exData && exData.setDurations) {
+                const nextIdx = idx + 1;
+                if (nextIdx < exData.sets) {
+                  const nextDuration = exData.setDurations[nextIdx] || exData.setDurations[exData.setDurations.length - 1];
+                  if (nextDuration) {
+                    next[`${exId}|${nextIdx}`] = { remaining: nextDuration, total: nextDuration };
+                  }
                 }
-                setTimers((t) => { const n = { ...t }; for (const f of finished) delete n[f.key]; return n; });
-              }, 0);
+              }
             }
+
+            // Schedule the side effects (sound + marking set done) after this state update
+            setTimeout(() => {
+              playTimerEnd();
+              for (const f of finished) {
+                const [exId, idxStr] = f.key.split("|");
+                const idx = parseInt(idxStr, 10);
+                updateCurrentSession((sess) => ({
+                  ...sess,
+                  exercises: {
+                    ...sess.exercises,
+                    [exId]: sess.exercises[exId].map((s, i) =>
+                      i === idx ? { ...s, reps: `${f.total}s`, done: true } : s
+                    ),
+                  },
+                }));
+                setManuallyExpanded((m) => { const n = { ...m }; delete n[exId]; return n; });
+              }
+            }, 0);
+
             return next;
           });
         }, 1000);
@@ -980,16 +998,6 @@
             </div>
           </header>
 
-          <div className="program-strip">
-            {PROGRAMS.map((p) => (
-              <button key={p.id} className={"program-pill" + (p.id === programId ? " active" : "")}
-                onClick={() => { setProgramId(p.id); setRestTimer(null); }}>
-                {p.short}
-              </button>
-            ))}
-          </div>
-          <div className="program-description">{program.description}</div>
-
           {savedFlash && <div className="flash">✓ Sessie opgeslagen. Goed bezig.</div>}
           {syncError && <div className="error-flash">{syncError}</div>}
 
@@ -1102,6 +1110,16 @@
             </div>
             <div className="today-program">{program.name}</div>
           </div>
+
+          <div className="program-strip">
+            {PROGRAMS.map((p) => (
+              <button key={p.id} className={"program-pill" + (p.id === programId ? " active" : "")}
+                onClick={() => { setProgramId(p.id); setRestTimer(null); }}>
+                {p.short}
+              </button>
+            ))}
+          </div>
+          <div className="program-description">{program.description}</div>
 
           <div className="progress-wrap">
             <div className="progress-label">
