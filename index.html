@@ -325,7 +325,7 @@
 
     const { useState, useEffect, useRef } = React;
 
-    const DEFAULT_REST = 90; // seconds between rep-based sets
+    const DEFAULT_REST = 30; // seconds between sets
 
     // ============================================================
     // PROGRAMS
@@ -798,12 +798,13 @@
         // Skip rest timer for time-based exercises (they have their own per-set timer)
         if (!wasDone && !ex.isTime) {
           const rest = ex.rest || DEFAULT_REST;
-          setRestTimer({ remaining: rest, total: rest, exId, setIdx: idx });
+          setRestTimer({ remaining: rest, total: rest, exId, setIdx: idx, chainTo: null });
         }
       };
 
       const startTimer = (exId, idx, duration) => {
         const key = `${exId}|${idx}`;
+        setRestTimer(null); // user is starting a set manually — skip any active rest
         setTimers((prev) => ({ ...prev, [key]: { remaining: duration, total: duration } }));
       };
       const stopTimer = (exId, idx) => {
@@ -828,26 +829,13 @@
             }
             if (finished.length === 0) return next;
 
-            // For each finished timer, remove it and possibly queue the next set
-            for (const f of finished) {
-              delete next[f.key];
-              const [exId, idxStr] = f.key.split("|");
-              const idx = parseInt(idxStr, 10);
-              const exData = ALL_EXERCISES[exId];
-              if (exData && exData.setDurations) {
-                const nextIdx = idx + 1;
-                if (nextIdx < exData.sets) {
-                  const nextDuration = exData.setDurations[nextIdx] || exData.setDurations[exData.setDurations.length - 1];
-                  if (nextDuration) {
-                    next[`${exId}|${nextIdx}`] = { remaining: nextDuration, total: nextDuration };
-                  }
-                }
-              }
-            }
+            // Remove finished entries
+            for (const f of finished) delete next[f.key];
 
-            // Schedule the side effects (sound + marking set done) after this state update
+            // Side effects: mark sets done + queue rest (with auto-chain) for next set
             setTimeout(() => {
               playTimerEnd();
+              let restToStart = null;
               for (const f of finished) {
                 const [exId, idxStr] = f.key.split("|");
                 const idx = parseInt(idxStr, 10);
@@ -861,7 +849,24 @@
                   },
                 }));
                 setManuallyExpanded((m) => { const n = { ...m }; delete n[exId]; return n; });
+
+                // Queue a rest + auto-chain to next timed set
+                const exData = ALL_EXERCISES[exId];
+                if (exData && exData.setDurations) {
+                  const nextIdx = idx + 1;
+                  if (nextIdx < exData.sets) {
+                    const nextDuration = exData.setDurations[nextIdx] || exData.setDurations[exData.setDurations.length - 1];
+                    if (nextDuration) {
+                      restToStart = {
+                        remaining: DEFAULT_REST,
+                        total: DEFAULT_REST,
+                        chainTo: { exId, setIdx: nextIdx, duration: nextDuration },
+                      };
+                    }
+                  }
+                }
               }
+              if (restToStart) setRestTimer(restToStart);
             }, 0);
 
             return next;
@@ -871,22 +876,37 @@
       }, [hasActiveTimers]);
 
       // Tick: rest timer
+      const hasRestTimer = !!restTimer;
       useEffect(() => {
-        if (!restTimer) return;
+        if (!hasRestTimer) return;
         const interval = setInterval(() => {
           setRestTimer((prev) => {
             if (!prev) return null;
             if (prev.remaining <= 1) {
-              setTimeout(() => playTimerEnd(), 0);
+              setTimeout(() => {
+                playTimerEnd();
+                if (prev.chainTo) {
+                  const { exId, setIdx, duration } = prev.chainTo;
+                  setTimers((t) => ({ ...t, [`${exId}|${setIdx}`]: { remaining: duration, total: duration } }));
+                }
+              }, 0);
               return null;
             }
             return { ...prev, remaining: prev.remaining - 1 };
           });
         }, 1000);
         return () => clearInterval(interval);
-      }, [restTimer ? restTimer.exId + "|" + restTimer.setIdx + "|" + restTimer.total : null]);
+      }, [hasRestTimer]);
 
-      const dismissRestTimer = () => setRestTimer(null);
+      const dismissRestTimer = () => {
+        setRestTimer((prev) => {
+          if (prev && prev.chainTo) {
+            const { exId, setIdx, duration } = prev.chainTo;
+            setTimers((t) => ({ ...t, [`${exId}|${setIdx}`]: { remaining: duration, total: duration } }));
+          }
+          return null;
+        });
+      };
 
       const adjustRestTimer = (delta) => {
         setRestTimer((prev) => {
@@ -1242,22 +1262,29 @@
           <div className="footnote">Automatisch gesynchroniseerd met Supabase.</div>
           <div className="bottom-margin" />
 
-          {restTimer && (
-            <div className="rest-bar">
-              <div className="rest-bar-progress"
-                style={{ transform: `scaleX(${1 - restTimer.remaining / restTimer.total})` }} />
-              <div className="rest-bar-content">
-                <div>
-                  <div className="rest-bar-label">Rust</div>
-                  <div className="rest-bar-time">{formatTime(restTimer.remaining)}</div>
+          {restTimer && (() => {
+            const nextLabel = restTimer.chainTo ? (() => {
+              const ex = ALL_EXERCISES[restTimer.chainTo.exId];
+              if (!ex) return null;
+              return ex.setLabels ? ex.setLabels[restTimer.chainTo.setIdx] : `Set ${restTimer.chainTo.setIdx + 1}`;
+            })() : null;
+            return (
+              <div className="rest-bar">
+                <div className="rest-bar-progress"
+                  style={{ transform: `scaleX(${1 - restTimer.remaining / restTimer.total})` }} />
+                <div className="rest-bar-content">
+                  <div>
+                    <div className="rest-bar-label">Rust{nextLabel ? ` · ${nextLabel}` : ""}</div>
+                    <div className="rest-bar-time">{formatTime(restTimer.remaining)}</div>
+                  </div>
+                  <div className="rest-bar-spacer" />
+                  <button className="rest-bar-btn" onClick={() => adjustRestTimer(-15)}>−15s</button>
+                  <button className="rest-bar-btn" onClick={() => adjustRestTimer(15)}>+15s</button>
+                  <button className="rest-bar-close" onClick={dismissRestTimer} aria-label={restTimer.chainTo ? "Skip rust" : "Sluiten"}>×</button>
                 </div>
-                <div className="rest-bar-spacer" />
-                <button className="rest-bar-btn" onClick={() => adjustRestTimer(-15)} aria-label="15 seconden korter">−15s</button>
-                <button className="rest-bar-btn" onClick={() => adjustRestTimer(15)} aria-label="15 seconden langer">+15s</button>
-                <button className="rest-bar-close" onClick={dismissRestTimer} aria-label="Sluiten">×</button>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {enlargedExercise && (
             <div className="modal-backdrop" onClick={() => { setEnlargedExercise(null); setEditingImage(null); }}>
